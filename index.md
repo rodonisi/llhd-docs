@@ -84,23 +84,29 @@ Truth Table for `lN`:
 1. &laquo;unnamed&raquo;: integer or integer
 
 ### llhd.const (llhd::ConstOp)
-Constant
+Introduce a new constant.
 
 #### Description:
 
 
-The const instruction is used to introduce a constant value into the IR. 
-The first version constructs a constant integer value, the second a 
-constant integer signal, and the third a constant time value.
+The `llhd.const` instruction introduces a new constant value as an 
+SSA-operator.  
+Legal types are integers and time. Note: Signals 
+are not legal to define using `llhd.const`, use the `llhd.sig` 
+instruction for that.
+
+**Custom syntax:**
+
 ```
-%result = llhd.const <int> : iN
-%result = llhd.const <int> : !llhd.sig<iN>
-%result = llhd.const <time> : time
+const-op ::= <ssa-id> `=` `llhd.const` attr-dict <attribute-value> `:` <result-type>
 ```
-`int` is an integer literal such as `0b0101`, `0o1247`, `129`, or `0x14F3E`
-time is a time literal such as `1s`, `1s 2d`, or `1s 2d 3e`, where the 
-real component may carry an SI prefix such as `as`, `fs`, `ps`, `ns`, 
-`us`, `ms`.
+
+**Examples:**
+
+```mlir
+%0 = llhd.const 1 : i64
+%1 = llhd.const #llhd.time<1ns, 2d, 3d> : !llhd.time
+```
 
 #### Operands:
 
@@ -109,11 +115,11 @@ real component may carry an SI prefix such as `as`, `fs`, `ps`, `ns`,
 
 | Attribute | MLIR Type | Description |
 | :-------: | :-------: | ----------- |
-| `value` | `IntegerAttr` | 64-bit signless integer attribute attribute |
+| `value` | `Attribute` | any attribute attribute |
 
 #### Results:
 
-1. `out`: integer or LLHD sig type
+1. `out`: integer or LLHD time type
 
 ### llhd.drv (llhd::DrvOp)
 Drive a value into a signal.
@@ -133,7 +139,7 @@ The drv instruction drives a `%value` onto a signal `%sig`.
 #### Operands:
 
 1. `signal`: LLHD sig type
-1. `value`: integer
+1. `value`: integer or LLHD time type
 
 #### Attributes:
 
@@ -309,7 +315,7 @@ The `prb` instruction probes the current value of a signal `%sig`.
 
 #### Results:
 
-1. `output`: integer
+1. `output`: integer or LLHD time type
 
 ### llhd.proc (llhd::ProcOp)
 
@@ -531,7 +537,7 @@ value `%init` and returns that signal.
 
 #### Operands:
 
-1. `init`: integer
+1. `init`: integer or LLHD time type
 
 #### Attributes:
 
@@ -693,7 +699,7 @@ observed signals change or optionally a fixed time interval has passed.
 #### Operands:
 
 1. `obs`: LLHD sig type
-1. `destOps`: integer or LLHD sig type
+1. `destOps`: integer or LLHD sig type or LLHD time type
 
 #### Attributes:
 
