@@ -297,14 +297,23 @@ Probe a signal.
 #### Description:
 
 
-```
-%result = prb T$ %sig
-```
-The `prb` instruction probes the current value of a signal `%sig`.
+The `llhd.prb` instruction probes a signal and returns the value it
+currently carries as a new SSA operand. The result type is always
+the type carried by the signal.
 
-* `T` may be any type.
-* `%sig` must be of type `T$`.
-* `%result` is of type `T`.
+ **Custom syntax:**
+
+ ```
+ prb-op ::= <ssa-id> `=` `llhd.prb` <ssa-use> attr-dict `:` !llhd.sig< <type> > `->` <type>
+ ```
+
+ **Examples:***
+
+ ```mlir
+ %const_i1 = llhd.const 1 : i1
+ %sig_i1 = llhd.sig %const_i1 : i1 -> !llhd.sig<i1>
+ %prbd = llhd.prb %sig_i1 : !llhd.sig<i1> -> i1
+ ```
 
 #### Operands:
 
@@ -524,16 +533,28 @@ Create a signal.
 #### Description:
 
 
+The `llhd.sig` instruction introduces a new signal in the IR. The input 
+operand determines the initial value carried by the signal, while the
+result type will always be a signal carrying the type of the init operand.
+
+**Custom syntax:**
+
 ```
-%result = llhd.sig %init : T
+sig-op ::= <ssa-id> `=` `llhd.sig` <ssa-use> attr-dict `:` <init-type> `->` !llhd.sig< <init-type> >
 ```
 
-The `sig` instruction creates a signal in an entity with the initial 
-value `%init` and returns that signal.
+**Examples:**
 
-* `T` may be any type.  
-* `%init` is the initial value of the signal and must be of type `T`.  
-* `%result` is of type `T$`.  
+```mlir
+%init_i64 = llhd.const 123 : i64
+%sig_i64 = llhd.sig %init_64 : i64 -> !llhd.sig<i64>
+
+%init_i1 = llhd.const 1 : i1
+%sig_i1 = llhd.sig %init_i1 : i1 -> !llhd.sig<i1>
+```
+The first `llhd.sig` instruction creates a new signal carrying an `i64` 
+type with initial value of 123, while the second one creates a new signal
+carrying an `i1` value with initial value of 1.
 
 #### Operands:
 
