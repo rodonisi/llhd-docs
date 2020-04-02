@@ -184,8 +184,19 @@ operation ::= `llhd.halt` attr-dict
 
 
 The `halt` instruction terminates execution of a process. All processes 
-must eventually halt or consist of an infinite loop.
+must halt eventually or consist of an infinite loop.
 * This is a terminator instruction
+* This instruction is only allowed in processes (`llhd.proc`).
+
+**Syntax:**
+```
+halt-op ::= `llhd.halt`
+```
+
+**Examples:**
+```
+llhd.halt
+```
 
 ### `llhd.neg` (llhd::NegOp)
 
@@ -792,7 +803,26 @@ operation ::= `llhd.urem` `(` operands `)` attr-dict `:` `(` type(operands) `)` 
 Suspends execution of a process.
 
 The `wait` instruction suspends execution of a process until any of the 
-observed signals change or optionally a fixed time interval has passed.
+observed signals change or a fixed time interval has passed. Execution
+resumes at the specified basic block with the passed arguments.
+* This is a terminator instruction.
+* This instruction is only allowed in processes (`llhd.proc`).
+
+**Syntax:**
+```
+wait-op ::= `llhd.wait` ssa-list-obs (`for` ssa-time)? `,` successor-dest ( `(` ssa-list-dest-arguments `:` type-list-dest-arguments `)` )? `:` type-list-obs (`,` type-time)?
+```
+Notes: 
+* `ssa-list-obs`, `ssa-list-dest-arguments`, `type-list-dest-arguments` and `type-list-obs` are comma-separated lists of 0 or more elements.
+* In case there is no optional time and `type-list-obs` has zero elements, the last colon is omitted as well.
+
+**Examples:**
+```
+llhd.wait ^bb1
+llhd.wait for %time, ^bb1(%time : !llhd.time) : !llhd.time
+llhd.wait %0, %1, ^bb1(%1 : !llhd.sig<i1>) : !llhd.sig<i64>, !llhd.sig<i1>
+llhd.wait %0, %1 for %time, ^bb1(%1, %0 : !llhd.sig<i1>, !llhd.sig<i64>) : !llhd.sig<i64>, !llhd.sig<i1>, !llhd.time
+```
 
 #### Attributes:
 
@@ -805,7 +835,8 @@ observed signals change or optionally a fixed time interval has passed.
 | Operand | Description |
 | :-----: | ----------- |
 `obs` | LLHD sig type
-`destOps` | integer or LLHD sig type or LLHD time type
+`time` | LLHD time type
+`destOps` | any type
 
 #### Successors:
 
