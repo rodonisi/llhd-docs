@@ -100,7 +100,7 @@ instruction for that.
 **Custom syntax:**
 
 ```
-const-op ::= <ssa-id> `=` `llhd.const` attr-dict <attribute-value> `:` <result-type>
+const-op ::= ssa-id `=` `llhd.const` attribute-value attr-dict `:` result-type
 ```
 
 **Examples:**
