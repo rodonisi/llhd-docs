@@ -1,0 +1,12 @@
+title: LLHD Documentation
+description: A low-level intermediate representation for hardware description languages in MLIR
+baseurl: "/llhd-docs/"
+url: "https://rodonisi.github.io"
+
+remote_theme: pmarsceill/just-the-docs
+
+# enable search
+search_enabled: true
+
+# enable heading anchors
+heading_anchors: true
