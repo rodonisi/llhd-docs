@@ -2,7 +2,7 @@
 title: Operations
 nav_order: 2
 ---
-{::options toc_levels:"1..3" /}
+{::options toc_levels="1..3" /}
 
 # Operations
 {: .no_toc}
