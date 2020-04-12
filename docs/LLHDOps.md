@@ -141,8 +141,32 @@ llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
 
 ### `llhd.entity` (llhd::EntityOp)
 
-Define an LLHD entity.
+Create an entity.
 
+The `llhd.entity` operation defines a new entity unit. An entity 
+represents the data-flow description of how a circuit's output values
+change in reaction to changing input values.  
+An entity contains one region with a single block and an implicit 
+`TerminatorOp` terminator. Both the block name and terminator are 
+omitted in the custom syntax. No further blocks and control-flow are 
+legal inside an entity.
+
+**Custom syntax:**
+```
+entity-op ::= `llhd.entity` entity-symbol `(` arg-list `)` `->` `(` out-list `)` attr-dict entity-region
+```
+
+**Examples:**
+```
+llhd.entity @Foo () -> () {
+    %0 = llhd.const 0 : i1
+    %toggle = llhd.sig %0 : i1 -> !llhd.sig<i1>
+    %1 = llhd.prb %toggle : !llhd.sig<i1> -> i1
+    %2 = llhd.not %1 : i1
+    %dt = llhd.const #llhd.time<1ns, 0d, 0e> : !llhd.time
+    llhd.drv %toggle, %2, %dt : !llhd.sig<i1>, i1, !llhd.time
+}
+```
 
 #### Attributes:
 
@@ -537,6 +561,10 @@ carrying an `i1` value with initial value of 1.
 
 Dummy terminator
 
+The `"llhd.terminator"` op is a dummy terminator for an `EntityOp` unit. 
+It provides no further meaning other than ensuring correct termination 
+of an entitiy's region. This operation provides no custom syntax and 
+should never explicitly appear in LLHD's custom syntax.
 
 ### `llhd.wait` (llhd::WaitOp)
 
