@@ -82,7 +82,7 @@ const-op ::= ssa-id `=` `llhd.const` attribute-value attr-dict `:` result-type
 
 **Examples:**
 
-```mlir
+```
 %0 = llhd.const 1 : i64
 %1 = llhd.const #llhd.time<1ns, 2d, 3d> : !llhd.time
 ```
@@ -122,7 +122,7 @@ drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `:` !llhd.sig<const-
 
 **Examples:**
 
-```mlir
+```
 %init = llhd.const 1 : i1
 %time = llhd.const #llhd.time<1ns, 0d, 0e> : !llhd.time
 %sig = llhd.sig %init : i1 -> !llhd.sig<i1>
@@ -351,7 +351,7 @@ the type carried by the signal.
 
  **Examples:***
 
- ```mlir
+ ```
  %const_i1 = llhd.const 1 : i1
  %sig_i1 = llhd.sig %const_i1 : i1 -> !llhd.sig<i1>
  %prbd = llhd.prb %sig_i1 : !llhd.sig<i1> -> i1
@@ -534,7 +534,7 @@ sig-op ::= ssa-id `=` `llhd.sig` ssa-init attr-dict `:` init-type `->` !llhd.sig
 
 **Examples:**
 
-```mlir
+```
 %init_i64 = llhd.const 123 : i64
 %sig_i64 = llhd.sig %init_64 : i64 -> !llhd.sig<i64>
 
