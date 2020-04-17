@@ -6,7 +6,7 @@ url: "https://rodonisi.github.io"
 remote_theme: pmarsceill/just-the-docs
 
 # exclude from site
-exlude: ["assets/", "README.md]
+exclude: ["assets/", "README.md]
 
 # enable search
 search_enabled: true
