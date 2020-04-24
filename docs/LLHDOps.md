@@ -525,6 +525,7 @@ operation ::= `llhd.sig` $init attr-dict `:` type($init) `->` type(results)
 The `llhd.sig` instruction introduces a new signal in the IR. The input 
 operand determines the initial value carried by the signal, while the
 result type will always be a signal carrying the type of the init operand.
+Signals can only be allocated within entities.
 
 **Custom syntax:**
 
