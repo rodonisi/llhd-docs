@@ -298,8 +298,8 @@ or-op ::= ssa-id `=` `llhd.or` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 | `or`  |  0  |  1  |
 |:-----:|:---:|:---:|
-|   0   |  0  |  0  |
-|   1   |  0  |  1  |
+|   0   |  0  |  1  |
+|   1   |  1  |  1  |
 
 **Truth Table for `lN`:**
 
@@ -635,8 +635,8 @@ xor-op ::= ssa-id `=` `llhd.xor` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 | `xor` |  0  |  1  |
 |:-----:|:---:|:---:|
-|   0   |  0  |  0  |
-|   1   |  0  |  1  |
+|   0   |  0  |  1  |
+|   1   |  1  |  0  |
 
 **Truth Table for `lN`:**
 
