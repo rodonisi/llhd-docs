@@ -55,14 +55,14 @@ and-op ::= ssa-id `=` `llhd.and` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 | Operand | Description |
 | :-----: | ----------- |
-`lhs` | integer or integer
-`rhs` | integer or integer
+`lhs` | signless integer
+`rhs` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or integer
+&laquo;unnamed&raquo; | signless integer
 
 ### `llhd.const` (llhd::ConstOp)
 
@@ -97,7 +97,7 @@ const-op ::= ssa-id `=` `llhd.const` attribute-value attr-dict `:` result-type
 
 | Result | Description |
 | :----: | ----------- |
-`out` | integer or LLHD time type
+`out` | signless integer or LLHD time type
 
 ### `llhd.drv` (llhd::DrvOp)
 
@@ -136,7 +136,7 @@ llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
 | Operand | Description |
 | :-----: | ----------- |
 `signal` | LLHD sig type
-`value` | integer or LLHD time type
+`value` | signless integer
 `time` | LLHD time type
 
 ### `llhd.entity` (llhd::EntityOp)
@@ -224,13 +224,13 @@ neg-op ::= ssa-id `=` `llhd.neg` ssa-value attr-dict `:` type
 
 | Operand | Description |
 | :-----: | ----------- |
-`value` | integer
+`value` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or integer
+&laquo;unnamed&raquo; | signless integer
 
 ### `llhd.not` (llhd::NotOp)
 
@@ -267,13 +267,13 @@ not-op ::= ssa-id `=` `llhd.not` ssa-value attr-dict `:` type
 
 | Operand | Description |
 | :-----: | ----------- |
-`value` | integer or integer
+`value` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or integer
+&laquo;unnamed&raquo; | signless integer
 
 ### `llhd.or` (llhd::OrOp)
 
@@ -319,14 +319,14 @@ or-op ::= ssa-id `=` `llhd.or` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 | Operand | Description |
 | :-----: | ----------- |
-`lhs` | integer or integer
-`rhs` | integer or integer
+`lhs` | signless integer
+`rhs` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or integer
+&laquo;unnamed&raquo; | signless integer
 
 ### `llhd.prb` (llhd::PrbOp)
 
@@ -367,7 +367,7 @@ the type carried by the signal.
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or LLHD time type
+&laquo;unnamed&raquo; | signless integer
 
 ### `llhd.proc` (llhd::ProcOp)
 
@@ -406,14 +406,14 @@ smod-op ::= ssa-id `=` `llhd.smod` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 | Operand | Description |
 | :-----: | ----------- |
-`lhs` | integer
-`rhs` | integer
+`lhs` | signless integer
+`rhs` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or integer
+&laquo;unnamed&raquo; | signless integer
 
 ### `llhd.shl` (llhd::ShlOp)
 
@@ -453,15 +453,15 @@ shl-op ::= ssa-id `=` `llhd.shl` ssa-base `,` ssa-hidden `,` ssa-amount attr-dic
 
 | Operand | Description |
 | :-----: | ----------- |
-`base` | integer or integer or LLHD sig type
-`hidden` | integer or integer or LLHD sig type
+`base` | signless integer or LLHD sig type
+`hidden` | signless integer or LLHD sig type
 `amount` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-`result` | integer or integer or LLHD sig type
+`result` | signless integer or LLHD sig type
 
 ### `llhd.shr` (llhd::ShrOp)
 
@@ -501,15 +501,15 @@ shr-op ::= ssa-id `=` `llhd.shr` ssa-base `,` ssa-hidden `,` ssa-amount attr-dic
 
 | Operand | Description |
 | :-----: | ----------- |
-`base` | integer or integer or LLHD sig type
-`hidden` | integer or integer or LLHD sig type
+`base` | signless integer or LLHD sig type
+`hidden` | signless integer or LLHD sig type
 `amount` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-`result` | integer or integer or LLHD sig type
+`result` | signless integer or LLHD sig type
 
 ### `llhd.sig` (llhd::SigOp)
 
@@ -550,7 +550,7 @@ carrying an `i1` value with initial value of 1.
 
 | Operand | Description |
 | :-----: | ----------- |
-`init` | integer or LLHD time type
+`init` | signless integer
 
 #### Results:
 
@@ -657,12 +657,12 @@ xor-op ::= ssa-id `=` `llhd.xor` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 | Operand | Description |
 | :-----: | ----------- |
-`lhs` | integer or integer
-`rhs` | integer or integer
+`lhs` | signless integer
+`rhs` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | integer or integer
+&laquo;unnamed&raquo; | signless integer
 
