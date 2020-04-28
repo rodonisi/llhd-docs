@@ -16,7 +16,7 @@ nav_order: 2
 Bitwise AND
 
 Takes two integers of the same width or two nine-valued-logic (IEEE 1164)
-values of the same width as input. Calculates the bitwise AND. The 
+values of the same width as input. Calculates the bitwise AND. The
 result is always of the exact same type as the two inputs.
 
 **Syntax:**
@@ -27,7 +27,7 @@ and-op ::= ssa-id `=` `llhd.and` ssa-lhs `,` ssa-rhs attr-dict `:` type
 **Examples:**
 ```
 %0 = llhd.const 0 : i32
-%1 = llhd.and %0, %0 : i32 
+%1 = llhd.and %0, %0 : i32
 ```
 
 **Truth Table for `iN`:**
@@ -68,10 +68,10 @@ and-op ::= ssa-id `=` `llhd.and` ssa-lhs `,` ssa-rhs attr-dict `:` type
 
 Introduce a new constant.
 
-The `llhd.const` instruction introduces a new constant value as an 
-SSA-operator.  
-Legal types are integers and time. Note: Signals 
-are not legal to define using `llhd.const`, use the `llhd.sig` 
+The `llhd.const` instruction introduces a new constant value as an
+SSA-operator.
+Legal types are integers and time. Note: Signals
+are not legal to define using `llhd.const`, use the `llhd.sig`
 instruction for that.
 
 **Custom syntax:**
@@ -143,12 +143,12 @@ llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
 
 Create an entity.
 
-The `llhd.entity` operation defines a new entity unit. An entity 
+The `llhd.entity` operation defines a new entity unit. An entity
 represents the data-flow description of how a circuit's output values
-change in reaction to changing input values.  
-An entity contains one region with a single block and an implicit 
-`TerminatorOp` terminator. Both the block name and terminator are 
-omitted in the custom syntax. No further blocks and control-flow are 
+change in reaction to changing input values.
+An entity contains one region with a single block and an implicit
+`TerminatorOp` terminator. Both the block name and terminator are
+omitted in the custom syntax. No further blocks and control-flow are
 legal inside an entity.
 
 **Custom syntax:**
@@ -185,7 +185,7 @@ operation ::= `llhd.halt` attr-dict
 ```
 
 
-The `halt` instruction terminates execution of a process. All processes 
+The `halt` instruction terminates execution of a process. All processes
 must halt eventually or consist of an infinite loop.
 * This is a terminator instruction
 * This instruction is only allowed in processes (`llhd.proc`).
@@ -236,8 +236,8 @@ neg-op ::= ssa-id `=` `llhd.neg` ssa-value attr-dict `:` type
 
 Bitwise NOT
 
-Takes an integer of any width or a nine-valued-logic (IEEE 1164) value 
-of any width as input. Flips each bit of a value. The result always has 
+Takes an integer of any width or a nine-valued-logic (IEEE 1164) value
+of any width as input. Flips each bit of a value. The result always has
 the exact same type.
 
 **Syntax:**
@@ -248,7 +248,7 @@ not-op ::= ssa-id `=` `llhd.not` ssa-value attr-dict `:` type
 **Examples:**
 ```
 %0 = llhd.const 0 : i32
-%1 = llhd.not %0 : i32 
+%1 = llhd.not %0 : i32
 ```
 
 **Truth Table for `iN`:**
@@ -280,7 +280,7 @@ not-op ::= ssa-id `=` `llhd.not` ssa-value attr-dict `:` type
 Bitwise OR
 
 Takes two integers of the same width or two nine-valued-logic (IEEE 1164)
-values of the same width as input. Calculates the bitwise OR. The 
+values of the same width as input. Calculates the bitwise OR. The
 result is always of the exact same type as the two inputs.
 
 **Syntax:**
@@ -291,7 +291,7 @@ or-op ::= ssa-id `=` `llhd.or` ssa-lhs `,` ssa-rhs attr-dict `:` type
 **Examples:**
 ```
 %0 = llhd.const 0 : i32
-%1 = llhd.or %0, %0 : i32 
+%1 = llhd.or %0, %0 : i32
 ```
 
 **Truth Table for `iN`:**
@@ -430,7 +430,7 @@ The type of the base value and the hidden value must be the same, but
 may differ in the number of bits or elements. The result always has the
 same type (including width) of the base value.
 The instruction is transparent to signals and pointers. For example,
-passing a signal as argument will shift the underlying value and return 
+passing a signal as argument will shift the underlying value and return
 a signal to the shifted value.
 Allowed (underlying) types are signless integers, nine-valued-logic values
 and arrays. The shift amount has to be a signless integer. A shift amount
@@ -478,7 +478,7 @@ The type of the base value and the hidden value must be the same, but
 may differ in the number of bits or elements. The result always has the
 same type (including width) of the base value.
 The instruction is transparent to signals and pointers. For example,
-passing a signal as argument will shift the underlying value and return 
+passing a signal as argument will shift the underlying value and return
 a signal to the shifted value.
 Allowed (underlying) types are signless integers, nine-valued-logic values
 and arrays. The shift amount has to be a signless integer. A shift amount
@@ -522,7 +522,7 @@ operation ::= `llhd.sig` $init attr-dict `:` type($init) `->` type(results)
 ```
 
 
-The `llhd.sig` instruction introduces a new signal in the IR. The input 
+The `llhd.sig` instruction introduces a new signal in the IR. The input
 operand determines the initial value carried by the signal, while the
 result type will always be a signal carrying the type of the init operand.
 Signals can only be allocated within entities.
@@ -542,7 +542,7 @@ sig-op ::= ssa-id `=` `llhd.sig` ssa-init attr-dict `:` init-type `->` !llhd.sig
 %init_i1 = llhd.const 1 : i1
 %sig_i1 = llhd.sig %init_i1 : i1 -> !llhd.sig<i1>
 ```
-The first `llhd.sig` instruction creates a new signal carrying an `i64` 
+The first `llhd.sig` instruction creates a new signal carrying an `i64`
 type with initial value of 123, while the second one creates a new signal
 carrying an `i1` value with initial value of 1.
 
@@ -562,16 +562,16 @@ carrying an `i1` value with initial value of 1.
 
 Dummy terminator
 
-The `"llhd.terminator"` op is a dummy terminator for an `EntityOp` unit. 
-It provides no further meaning other than ensuring correct termination 
-of an entitiy's region. This operation provides no custom syntax and 
+The `"llhd.terminator"` op is a dummy terminator for an `EntityOp` unit.
+It provides no further meaning other than ensuring correct termination
+of an entitiy's region. This operation provides no custom syntax and
 should never explicitly appear in LLHD's custom syntax.
 
 ### `llhd.wait` (llhd::WaitOp)
 
 Suspends execution of a process.
 
-The `wait` instruction suspends execution of a process until any of the 
+The `wait` instruction suspends execution of a process until any of the
 observed signals change or a fixed time interval has passed. Execution
 resumes at the specified basic block with the passed arguments.
 * This is a terminator instruction.
@@ -581,7 +581,7 @@ resumes at the specified basic block with the passed arguments.
 ```
 wait-op ::= `llhd.wait` ssa-list-obs (`for` ssa-time)? `,` successor-dest ( `(` ssa-list-dest-arguments `:` type-list-dest-arguments `)` )? `:` type-list-obs (`,` type-time)?
 ```
-Notes: 
+Notes:
 * `ssa-list-obs`, `ssa-list-dest-arguments`, `type-list-dest-arguments` and `type-list-obs` are comma-separated lists of 0 or more elements.
 * In case there is no optional time and `type-list-obs` has zero elements, the last colon is omitted as well.
 
@@ -618,7 +618,7 @@ llhd.wait %0, %1 for %time, ^bb1(%1, %0 : !llhd.sig<i1>, !llhd.sig<i64>) : !llhd
 Bitwise XOR
 
 Takes two integers of the same width or two nine-valued-logic (IEEE 1164)
-values of the same width as input. Calculates the bitwise XOR. The 
+values of the same width as input. Calculates the bitwise XOR. The
 result is always of the exact same type as the two inputs.
 
 **Syntax:**
@@ -629,7 +629,7 @@ xor-op ::= ssa-id `=` `llhd.xor` ssa-lhs `,` ssa-rhs attr-dict `:` type
 **Examples:**
 ```
 %0 = llhd.const 0 : i32
-%1 = llhd.xor %0, %0 : i32 
+%1 = llhd.xor %0, %0 : i32
 ```
 
 **Truth Table for `iN`:**
