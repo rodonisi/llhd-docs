@@ -200,6 +200,46 @@ halt-op ::= `llhd.halt`
 llhd.halt
 ```
 
+### `llhd.inst` (llhd::InstOp)
+
+Instantiates a process or entity.
+
+Syntax:
+
+```
+operation ::= `llhd.inst` $callee `(` $inputs `)` `->` `(` $outputs `)` attr-dict `:`
+              functional-type($inputs, $outputs)
+```
+
+
+Instantiates a process or entity and thus allows to build hierarchies.
+Can only be used within an entity.
+
+Syntax:
+```
+inst-op ::= `llhd.inst` symbol-name `(` ssa-input-list `)` `->` `(` ssa-output-list `)` attr-dict `:` functional-type(ssa-input-list, ssa-output-list)
+```
+
+Examples:
+```
+llhd.inst @empty() -> () : () -> ()
+llhd.inst @proc_symbol() -> (%out0) : () -> !llhd.sig<i32>
+llhd.inst @entity_symbol(%in0, %in1) -> (%out0, %out1) : (!llhd.sig<i32>, !llhd.sig<i16>) -> (!llhd.sig<i8>, !llhd.sig<i4>)
+```
+
+#### Attributes:
+
+| Attribute | MLIR Type | Description |
+| :-------: | :-------: | ----------- |
+`callee` | FlatSymbolRefAttr | flat symbol reference attribute
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`inputs` | LLHD sig type
+`outputs` | LLHD sig type
+
 ### `llhd.neg` (llhd::NegOp)
 
 Negate a value.
@@ -371,8 +411,37 @@ the type carried by the signal.
 
 ### `llhd.proc` (llhd::ProcOp)
 
+Create a process
 
+A `llhd.proc` represents control-flow in a timed fashion. It allows a
+procedural description of how a circuit's output signals change in
+reaction to changing input signals. It has a region with arbitrarily
+many basic blocks. The first block is the entry block and cannot be
+targeted by the terminators. It uses `llhd.wait` as a terminator to add
+timed control-flow. Immediate control-flow with `br` or `cond_br` is
+also possible. Every process must either contain an infinite loop or
+terminate with the `llhd.halt` terminator.
 
+How does a process compare to functions and entities?
+| Unit     | Paradigm     | Timing    | Models                         |
+|----------|--------------|-----------|--------------------------------|
+| Function | control-flow | immediate | Computation in zero time       |
+| Process  | control-flow | timed     | Behavioral circuit description |
+| Entity   | data-flow    | timed     | Structural circuit description |
+
+Syntax:
+```
+proc-op ::= `llhd.proc` proc-symbol `(` ssa-input-list `)` `->` `(` ssa-output-list `)` attr-dict `{` proc-region `}`
+```
+
+Examples:
+```
+llhd.proc @example(%in0 : !llhd.sig<i64>, %in1 : !llhd.sig<i1>) -> (%out2 : !llhd.sig<i1>) {
+    br ^bb1
+^bb1:
+    llhd.halt
+}
+```
 
 #### Attributes:
 
