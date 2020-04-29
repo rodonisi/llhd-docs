@@ -110,25 +110,30 @@ operation ::= `llhd.drv` operands attr-dict `:` type(operands)
 ```
 
 
-The `llhd.drv` operation drives a new value onto a signal. A time operand
-also has to be passed, which specifies the frequency at which the drive
-will be performed. This operation does not define any new SSA operands.
+The `llhd.drv` operation drives a new value onto a signal. A time
+operand also has to be passed, which specifies the frequency at which
+the drive will be performed. An optional enable value can be passed as
+last argument. In this case the drive will only be performed if the
+value is 1. In case no enable signal is passed the drive will always be
+performed. This operation does not define any new SSA operands.
 
 **Custom Syntax:**
 
 ```
-drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `:` !llhd.sig<const-type> `,` const-type `,` time-type
+drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `,` ssa-enable `:` !llhd.sig<const-type> `,` const-type `,` time-type `,` i1
 ```
 
 **Examples:**
 
 ```
 %init = llhd.const 1 : i1
+%en = llhd.const 0 : i1
 %time = llhd.const #llhd.time<1ns, 0d, 0e> : !llhd.time
 %sig = llhd.sig %init : i1 -> !llhd.sig<i1>
 %new = llhd.not %init : i1
 
 llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
+llhd.drv %sig, %new, %time, %en : !llhd.sig<i1>, i1, !llhd.time, i1
 ```
 
 #### Operands:
@@ -138,6 +143,7 @@ llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
 `signal` | LLHD sig type
 `value` | signless integer
 `time` | LLHD time type
+`enable` | 1-bit signless integer
 
 ### `llhd.entity` (llhd::EntityOp)
 
@@ -199,6 +205,46 @@ halt-op ::= `llhd.halt`
 ```
 llhd.halt
 ```
+
+### `llhd.inst` (llhd::InstOp)
+
+Instantiates a process or entity.
+
+Syntax:
+
+```
+operation ::= `llhd.inst` $callee `(` $inputs `)` `->` `(` $outputs `)` attr-dict `:`
+              functional-type($inputs, $outputs)
+```
+
+
+Instantiates a process or entity and thus allows to build hierarchies.
+Can only be used within an entity.
+
+Syntax:
+```
+inst-op ::= `llhd.inst` symbol-name `(` ssa-input-list `)` `->` `(` ssa-output-list `)` attr-dict `:` functional-type(ssa-input-list, ssa-output-list)
+```
+
+Examples:
+```
+llhd.inst @empty() -> () : () -> ()
+llhd.inst @proc_symbol() -> (%out0) : () -> !llhd.sig<i32>
+llhd.inst @entity_symbol(%in0, %in1) -> (%out0, %out1) : (!llhd.sig<i32>, !llhd.sig<i16>) -> (!llhd.sig<i8>, !llhd.sig<i4>)
+```
+
+#### Attributes:
+
+| Attribute | MLIR Type | Description |
+| :-------: | :-------: | ----------- |
+`callee` | FlatSymbolRefAttr | flat symbol reference attribute
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`inputs` | LLHD sig type
+`outputs` | LLHD sig type
 
 ### `llhd.neg` (llhd::NegOp)
 
@@ -371,8 +417,37 @@ the type carried by the signal.
 
 ### `llhd.proc` (llhd::ProcOp)
 
+Create a process
 
+A `llhd.proc` represents control-flow in a timed fashion. It allows a
+procedural description of how a circuit's output signals change in
+reaction to changing input signals. It has a region with arbitrarily
+many basic blocks. The first block is the entry block and cannot be
+targeted by the terminators. It uses `llhd.wait` as a terminator to add
+timed control-flow. Immediate control-flow with `br` or `cond_br` is
+also possible. Every process must either contain an infinite loop or
+terminate with the `llhd.halt` terminator.
 
+How does a process compare to functions and entities?
+| Unit     | Paradigm     | Timing    | Models                         |
+|----------|--------------|-----------|--------------------------------|
+| Function | control-flow | immediate | Computation in zero time       |
+| Process  | control-flow | timed     | Behavioral circuit description |
+| Entity   | data-flow    | timed     | Structural circuit description |
+
+Syntax:
+```
+proc-op ::= `llhd.proc` proc-symbol `(` ssa-input-list `)` `->` `(` ssa-output-list `)` attr-dict `{` proc-region `}`
+```
+
+Examples:
+```
+llhd.proc @example(%in0 : !llhd.sig<i64>, %in1 : !llhd.sig<i1>) -> (%out2 : !llhd.sig<i1>) {
+    br ^bb1
+^bb1:
+    llhd.halt
+}
+```
 
 #### Attributes:
 
