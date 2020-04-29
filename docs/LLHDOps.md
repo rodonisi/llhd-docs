@@ -110,25 +110,30 @@ operation ::= `llhd.drv` operands attr-dict `:` type(operands)
 ```
 
 
-The `llhd.drv` operation drives a new value onto a signal. A time operand
-also has to be passed, which specifies the frequency at which the drive
-will be performed. This operation does not define any new SSA operands.
+The `llhd.drv` operation drives a new value onto a signal. A time
+operand also has to be passed, which specifies the frequency at which
+the drive will be performed. An optional enable value can be passed as
+last argument. In this case the drive will only be performed if the
+value is 1. In case no enable signal is passed the drive will always be
+performed. This operation does not define any new SSA operands.
 
 **Custom Syntax:**
 
 ```
-drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `:` !llhd.sig<const-type> `,` const-type `,` time-type
+drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `,` ssa-enable `:` !llhd.sig<const-type> `,` const-type `,` time-type `,` i1
 ```
 
 **Examples:**
 
 ```
 %init = llhd.const 1 : i1
+%en = llhd.const 0 : i1
 %time = llhd.const #llhd.time<1ns, 0d, 0e> : !llhd.time
 %sig = llhd.sig %init : i1 -> !llhd.sig<i1>
 %new = llhd.not %init : i1
 
 llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
+llhd.drv %sig, %new, %time, %en : !llhd.sig<i1>, i1, !llhd.time, i1
 ```
 
 #### Operands:
@@ -138,6 +143,7 @@ llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
 `signal` | LLHD sig type
 `value` | signless integer
 `time` | LLHD time type
+`enable` | 1-bit signless integer
 
 ### `llhd.entity` (llhd::EntityOp)
 
