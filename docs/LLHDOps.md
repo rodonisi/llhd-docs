@@ -591,6 +591,13 @@ shr-op ::= ssa-id `=` `llhd.shr` ssa-base `,` ssa-hidden `,` ssa-amount attr-dic
 
 Create a signal.
 
+Syntax:
+
+```
+operation ::= `llhd.sig` $name $init attr-dict `:` type($init) `->` type(results)
+```
+
+
 The `llhd.sig` instruction introduces a new signal in the IR. The input
 operand determines the initial value carried by the signal, while the
 result type will always be a signal carrying the type of the init operand.
@@ -607,10 +614,10 @@ sig-op ::= ssa-id `=` `llhd.sig` sig-name ssa-init attr-dict `:` init-type `->` 
 
 ```
 %init_i64 = llhd.const 123 : i64
-%sig_i64 = llhd.sig foo %init_64 : i64 -> !llhd.sig<i64>
+%sig_i64 = llhd.sig "foo" %init_64 : i64 -> !llhd.sig<i64>
 
 %init_i1 = llhd.const 1 : i1
-%sig_i1 = llhd.sig bar %init_i1 : i1 -> !llhd.sig<i1>
+%sig_i1 = llhd.sig "bar" %init_i1 : i1 -> !llhd.sig<i1>
 ```
 The first `llhd.sig` instruction creates a new signal named "foo", carrying an `i64`
 type with initial value of 123, while the second one creates a new signal
