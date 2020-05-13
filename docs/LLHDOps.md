@@ -140,7 +140,7 @@ llhd.drv %sig, %new, %time, %en : !llhd.sig<i1>, i1, !llhd.time, i1
 
 | Operand | Description |
 | :-----: | ----------- |
-`signal` | LLHD sig type
+`signal` | LLHD sig type of signless integer or LLHD time type values
 `value` | signless integer
 `time` | LLHD time type
 `enable` | 1-bit signless integer
@@ -243,8 +243,8 @@ llhd.inst @entity_symbol(%in0, %in1) -> (%out0, %out1) : (!llhd.sig<i32>, !llhd.
 
 | Operand | Description |
 | :-----: | ----------- |
-`inputs` | LLHD sig type
-`outputs` | LLHD sig type
+`inputs` | LLHD sig type of signless integer or LLHD time type values
+`outputs` | LLHD sig type of signless integer or LLHD time type values
 
 ### `llhd.neg` (llhd::NegOp)
 
@@ -381,7 +381,7 @@ Probe a signal.
 Syntax:
 
 ```
-operation ::= `llhd.prb` $signal attr-dict `:` type($signal) `->` type(results)
+operation ::= `llhd.prb` $signal attr-dict `:` type($signal) `->` type($result)
 ```
 
 
@@ -407,13 +407,13 @@ the type carried by the signal.
 
 | Operand | Description |
 | :-----: | ----------- |
-`signal` | LLHD sig type
+`signal` | LLHD sig type of signless integer or LLHD time type values
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | signless integer
+`result` | signless integer
 
 ### `llhd.proc` (llhd::ProcOp)
 
@@ -529,15 +529,15 @@ shl-op ::= ssa-id `=` `llhd.shl` ssa-base `,` ssa-hidden `,` ssa-amount attr-dic
 
 | Operand | Description |
 | :-----: | ----------- |
-`base` | signless integer or LLHD sig type
-`hidden` | signless integer or LLHD sig type
+`base` | signless integer or LLHD sig type of signless integer or LLHD time type values
+`hidden` | signless integer or LLHD sig type of signless integer or LLHD time type values
 `amount` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-`result` | signless integer or LLHD sig type
+`result` | signless integer or LLHD sig type of signless integer or LLHD time type values
 
 ### `llhd.shr` (llhd::ShrOp)
 
@@ -577,15 +577,15 @@ shr-op ::= ssa-id `=` `llhd.shr` ssa-base `,` ssa-hidden `,` ssa-amount attr-dic
 
 | Operand | Description |
 | :-----: | ----------- |
-`base` | signless integer or LLHD sig type
-`hidden` | signless integer or LLHD sig type
+`base` | signless integer or LLHD sig type of signless integer or LLHD time type values
+`hidden` | signless integer or LLHD sig type of signless integer or LLHD time type values
 `amount` | signless integer
 
 #### Results:
 
 | Result | Description |
 | :----: | ----------- |
-`result` | signless integer or LLHD sig type
+`result` | signless integer or LLHD sig type of signless integer or LLHD time type values
 
 ### `llhd.sig` (llhd::SigOp)
 
@@ -594,7 +594,7 @@ Create a signal.
 Syntax:
 
 ```
-operation ::= `llhd.sig` $name $init attr-dict `:` type($init) `->` type(results)
+operation ::= `llhd.sig` $name $init attr-dict `:` type($init) `->` type($result)
 ```
 
 
@@ -639,7 +639,7 @@ named "bar", carrying an `i1` type with initial value of 1.
 
 | Result | Description |
 | :----: | ----------- |
-&laquo;unnamed&raquo; | LLHD sig type
+`result` | LLHD sig type of signless integer or LLHD time type values
 
 ### `llhd.terminator` (llhd::TerminatorOp)
 
@@ -686,7 +686,7 @@ llhd.wait %0, %1 for %time, ^bb1(%1, %0 : !llhd.sig<i1>, !llhd.sig<i64>) : !llhd
 
 | Operand | Description |
 | :-----: | ----------- |
-`obs` | LLHD sig type
+`obs` | LLHD sig type of signless integer or LLHD time type values
 `time` | LLHD time type
 `destOps` | any type
 
