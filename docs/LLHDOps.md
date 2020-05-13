@@ -106,7 +106,7 @@ Drive a value into a signal.
 Syntax:
 
 ```
-operation ::= `llhd.drv` operands attr-dict `:` type(operands)
+operation ::= `llhd.drv` $signal `,` $value `after` $time ( `if` $enable^ )? attr-dict `:` type($signal)
 ```
 
 
@@ -120,7 +120,7 @@ performed. This operation does not define any new SSA operands.
 **Custom Syntax:**
 
 ```
-drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `,` ssa-enable `:` !llhd.sig<const-type> `,` const-type `,` time-type `,` i1
+drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `after` ssa-time (`if` ssa-enable)? `:` !llhd.sig<const-type>
 ```
 
 **Examples:**
@@ -129,11 +129,11 @@ drv-op ::= `llhd.drv` ssa-signal `,` ssa-const `,` ssa-time `,` ssa-enable `:` !
 %init = llhd.const 1 : i1
 %en = llhd.const 0 : i1
 %time = llhd.const #llhd.time<1ns, 0d, 0e> : !llhd.time
-%sig = llhd.sig %init : i1 -> !llhd.sig<i1>
+%sig = llhd.sig %init : i1
 %new = llhd.not %init : i1
 
-llhd.drv %sig, %new, %time : !llhd.sig<i1>, i1, !llhd.time
-llhd.drv %sig, %new, %time, %en : !llhd.sig<i1>, i1, !llhd.time, i1
+llhd.drv %sig, %new after %time : !llhd.sig<i1>
+llhd.drv %sig, %new after %time if %en : !llhd.sig<i1>
 ```
 
 #### Operands:
@@ -381,7 +381,7 @@ Probe a signal.
 Syntax:
 
 ```
-operation ::= `llhd.prb` $signal attr-dict `:` type($signal) `->` type($result)
+operation ::= `llhd.prb` $signal attr-dict `:` type($signal)
 ```
 
 
@@ -392,15 +392,15 @@ the type carried by the signal.
  **Custom syntax:**
 
  ```
- prb-op ::= ssa-id `=` `llhd.prb` ssa-sig attr-dict `:` !llhd.sig<type> `->` type
+ prb-op ::= ssa-id `=` `llhd.prb` ssa-sig attr-dict `:` !llhd.sig<type>
  ```
 
  **Examples:***
 
  ```
  %const_i1 = llhd.const 1 : i1
- %sig_i1 = llhd.sig %const_i1 : i1 -> !llhd.sig<i1>
- %prbd = llhd.prb %sig_i1 : !llhd.sig<i1> -> i1
+ %sig_i1 = llhd.sig %const_i1 : i1
+ %prbd = llhd.prb %sig_i1 : !llhd.sig<i1>
  ```
 
 #### Operands:
@@ -594,7 +594,7 @@ Create a signal.
 Syntax:
 
 ```
-operation ::= `llhd.sig` $name $init attr-dict `:` type($init) `->` type($result)
+operation ::= `llhd.sig` $name $init attr-dict `:` type($init)
 ```
 
 
@@ -607,17 +607,17 @@ can only be allocated within entities.
 **Custom syntax:**
 
 ```
-sig-op ::= ssa-id `=` `llhd.sig` sig-name ssa-init attr-dict `:` init-type `->` !llhd.sig<init-type>
+sig-op ::= ssa-id `=` `llhd.sig` sig-name ssa-init attr-dict `:` init-type
 ```
 
 **Examples:**
 
 ```
 %init_i64 = llhd.const 123 : i64
-%sig_i64 = llhd.sig "foo" %init_64 : i64 -> !llhd.sig<i64>
+%sig_i64 = llhd.sig "foo" %init_64 : i64
 
 %init_i1 = llhd.const 1 : i1
-%sig_i1 = llhd.sig "bar" %init_i1 : i1 -> !llhd.sig<i1>
+%sig_i1 = llhd.sig "bar" %init_i1 : i1
 ```
 The first `llhd.sig` instruction creates a new signal named "foo", carrying an `i64`
 type with initial value of 123, while the second one creates a new signal
