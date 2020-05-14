@@ -456,6 +456,72 @@ llhd.proc @example(%in0 : !llhd.sig<i64>, %in1 : !llhd.sig<i1>) -> (%out2 : !llh
 | :-------: | :-------: | ----------- |
 `ins` | IntegerAttr | 64-bit signless integer attribute
 
+### `llhd.reg` (llhd::RegOp)
+
+Represents a storage element
+
+This instruction represents a storage element. At the beginning it is
+initialized with the `init` value. An arbitrary amount of triggers can
+be added to the storage element. They are triples consisting of the new
+value to be stored if the trigger applies, and the mode and trigger
+value which specify when this trigger has to be applied. If multiple
+triggers apply the left-most in the list takes precedence. Optionally,
+each triple may also have a gate condition, in this case the trigger
+only applies if the gate is one.
+
+There are five modes available:
+
+| Mode   | Meaning                                                     |
+|--------|-------------------------------------------------------------|
+| "low"  | Storage element stores `value` while the `trigger` is low. Models active-low resets and low-transparent latches. |
+| "high" | Storage element stores `value` while the `trigger` is high. Models active-high resets and high-transparent latches. |
+| "rise" | Storage element stores `value` upon the rising edge of the `trigger`. Models rising-edge flip-flops.
+| "fall" | Storage element stores `value` upon the falling edge of the `trigger`. Models falling-edge flip-flops.
+| "both" | Storage element stores `value` upon the a rising or a falling edge of the `trigger`. Models dual-edge flip-flops.
+
+This instruction may only be used in an LLHD entity.
+
+Syntax:
+
+```
+reg-op ::= `llhd.reg` init-ssa-value ( `,` `(` value-ssa-value `,` mode-string trigger-ssa-value ( `if` gate-ssa-value )? `:` value-type `,` trigger-type ( `,` gate-type )? `)` )* attr-dict `:` init-type
+```
+
+Examples:
+
+```
+llhd.entity @check_reg (%arg0 : !llhd.sig<i1>, %arg1 : !llhd.sig<i64>) -> () {
+    %0 = llhd.const 0 : i1
+    %1 = llhd.const 0 : i64
+    %2 = llhd.reg %1 : i64
+    %3 = llhd.reg %1, (%1, "both" %0 if %0 : i64, i1, i1) : i64
+    %4 = llhd.reg %1, (%1, "low" %0 if %arg0 : i64, i1, !llhd.sig<i1>), (%arg1, "high" %arg0 if %0 : !llhd.sig<i64>, !llhd.sig<i1>, i1) : i64
+    %5 = llhd.reg %1, (%1, "rise" %0 : i64, i1), (%arg1, "fall" %arg0 if %arg0 : !llhd.sig<i64>, !llhd.sig<i1>, !llhd.sig<i1>) : i64
+}
+```
+
+#### Attributes:
+
+| Attribute | MLIR Type | Description |
+| :-------: | :-------: | ----------- |
+`modes` | ArrayAttr | reg mode array attribute
+`gateMask` | ArrayAttr | 64-bit integer array attribute
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`init` | signless integer
+`values` | signless integer or LLHD sig type of signless integer or LLHD time type values
+`triggers` | 1-bit signless integer or LLHD sig type of 1-bit signless integer values
+`gates` | none type or 1-bit signless integer or LLHD sig type of 1-bit signless integer values
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | LLHD sig type of signless integer or LLHD time type values
+
 ### `llhd.smod` (llhd::SModOp)
 
 Signed modulo.
