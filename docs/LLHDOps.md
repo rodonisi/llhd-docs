@@ -654,6 +654,14 @@ should never explicitly appear in LLHD's custom syntax.
 
 Suspends execution of a process.
 
+Syntax:
+
+```
+operation ::= `llhd.wait` (`for` $time^ `,`)? (`(`$obs^ `:` type($obs)`)` `,`)?
+              $dest (`(` $destOps^ `:` type($destOps) `)`)? attr-dict
+```
+
+
 The `wait` instruction suspends execution of a process until any of the
 observed signals change or a fixed time interval has passed. Execution
 resumes at the specified basic block with the passed arguments.
@@ -662,25 +670,18 @@ resumes at the specified basic block with the passed arguments.
 
 **Syntax:**
 ```
-wait-op ::= `llhd.wait` ssa-list-obs (`for` ssa-time)? `,` successor-dest ( `(` ssa-list-dest-arguments `:` type-list-dest-arguments `)` )? `:` type-list-obs (`,` type-time)?
+wait-op ::= `llhd.wait` ( `for` ssa-time `,` )? ( `(` ssa-list-obs `:` type-list-obs `)` `,` )? successor-dest ( `(` ssa-list-dest-arguments `:` type-list-dest-arguments `)` )? attr-dict
 ```
 Notes:
 * `ssa-list-obs`, `ssa-list-dest-arguments`, `type-list-dest-arguments` and `type-list-obs` are comma-separated lists of 0 or more elements.
-* In case there is no optional time and `type-list-obs` has zero elements, the last colon is omitted as well.
 
 **Examples:**
 ```
 llhd.wait ^bb1
-llhd.wait for %time, ^bb1(%time : !llhd.time) : !llhd.time
-llhd.wait %0, %1, ^bb1(%1 : !llhd.sig<i1>) : !llhd.sig<i64>, !llhd.sig<i1>
-llhd.wait %0, %1 for %time, ^bb1(%1, %0 : !llhd.sig<i1>, !llhd.sig<i64>) : !llhd.sig<i64>, !llhd.sig<i1>, !llhd.time
+llhd.wait for %time, ^bb1(%time : !llhd.time)
+llhd.wait (%0, %1 : !llhd.sig<i64>, !llhd.sig<i1>), ^bb1(%1 : !llhd.sig<i1>)
+llhd.wait for %time, (%0, %1 : !llhd.sig<i64>, !llhd.sig<i1>), ^bb1(%1, %0 : !llhd.sig<i1>, !llhd.sig<i64>)
 ```
-
-#### Attributes:
-
-| Attribute | MLIR Type | Description |
-| :-------: | :-------: | ----------- |
-`operand_segment_sizes` | DenseIntElementsAttr | 32-bit signless integer elements attribute
 
 #### Operands:
 
