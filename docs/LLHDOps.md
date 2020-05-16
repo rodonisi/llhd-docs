@@ -460,14 +460,14 @@ llhd.proc @example(%in0 : !llhd.sig<i64>, %in1 : !llhd.sig<i1>) -> (%out2 : !llh
 
 Represents a storage element
 
-This instruction represents a storage element. At the beginning it is
-initialized with the `init` value. An arbitrary amount of triggers can
-be added to the storage element. They are triples consisting of the new
-value to be stored if the trigger applies, and the mode and trigger
-value which specify when this trigger has to be applied. If multiple
-triggers apply the left-most in the list takes precedence. Optionally,
-each triple may also have a gate condition, in this case the trigger
-only applies if the gate is one.
+This instruction represents a storage element. It drives its output onto
+the 'signal' value. An arbitrary amount of triggers can be added to the
+storage element. However, at least one is required. They are quadruples
+consisting of the new value to be stored if the trigger applies, the
+mode and trigger value which specify when this trigger has to be applied
+as well as a delay. Optionally, each triple may also have a gate
+condition, in this case the trigger only applies if the gate is one. If
+multiple triggers apply the left-most in the list takes precedence.
 
 There are five modes available:
 
@@ -484,20 +484,44 @@ This instruction may only be used in an LLHD entity.
 Syntax:
 
 ```
-reg-op ::= `llhd.reg` init-ssa-value ( `,` `(` value-ssa-value `,` mode-string trigger-ssa-value ( `if` gate-ssa-value )? `:` value-type `,` trigger-type ( `,` gate-type )? `)` )* attr-dict `:` init-type
+reg-op ::= `llhd.reg` signal-ssa-value ( `,` `(` value-ssa-value `,` mode-string trigger-ssa-value `after` delay-ssa-value ( `if` gate-ssa-value )? `:` value-type )+ attr-dict `:` signal-type
 ```
 
 Examples:
 
+A rising, falling, and dual-edge triggered flip-flop:
+
 ```
-llhd.entity @check_reg (%arg0 : !llhd.sig<i1>, %arg1 : !llhd.sig<i64>) -> () {
-    %0 = llhd.const 0 : i1
-    %1 = llhd.const 0 : i64
-    %2 = llhd.reg %1 : i64
-    %3 = llhd.reg %1, (%1, "both" %0 if %0 : i64, i1, i1) : i64
-    %4 = llhd.reg %1, (%1, "low" %0 if %arg0 : i64, i1, !llhd.sig<i1>), (%arg1, "high" %arg0 if %0 : !llhd.sig<i64>, !llhd.sig<i1>, i1) : i64
-    %5 = llhd.reg %1, (%1, "rise" %0 : i64, i1), (%arg1, "fall" %arg0 if %arg0 : !llhd.sig<i64>, !llhd.sig<i1>, !llhd.sig<i1>) : i64
-}
+llhd.reg %Q, (%D, "rise" %CLK after %T : !llhd.sig<i8>) : !llhd.sig<i8>
+llhd.reg %Q, (%D, "fall" %CLK after %T : !llhd.sig<i8>) : !llhd.sig<i8>
+llhd.reg %Q, (%D, "both" %CLK after %T : !llhd.sig<i8>) : !llhd.sig<i8>
+```
+
+A rising-edge triggered flip-flop with active-low reset:
+
+```
+llhd.reg %Q, (%init, "low" %RSTB after %T : !llhd.sig<i8>), (%D, "rise" %CLK after %T : !llhd.sig<i8>) : !llhd.sig<i8>
+```
+
+A rising-edge triggered enable flip-flop with active-low reset:
+
+```
+llhd.reg %Q, (%init, "low" %RSTB after %T : !llhd.sig<i8>), (%D, "rise" %CLK after %T if %EN : !llhd.sig<i8>) : !llhd.sig<i8>
+```
+
+A transparent-low and transparent-high latch:
+
+```
+llhd.reg %Q, (%D, "low" %CLK after %T : !llhd.sig<i8>) : !llhd.sig<i8>
+llhd.reg %Q, (%D, "high" %CLK after %T : !llhd.sig<i8>) : !llhd.sig<i8>
+```
+
+An SR latch:
+
+```
+%0 = llhd.const 0 : i1
+%1 = llhd.const 1 : i1
+llhd.reg %Q, (%0, "high" %R after %T : !llhd.sig<i1>), (%1, "high" %S after %T : !llhd.sig<i1>) : !llhd.sig<i1>
 ```
 
 #### Attributes:
@@ -511,16 +535,11 @@ llhd.entity @check_reg (%arg0 : !llhd.sig<i1>, %arg1 : !llhd.sig<i64>) -> () {
 
 | Operand | Description |
 | :-----: | ----------- |
-`init` | signless integer
-`values` | signless integer or LLHD sig type of signless integer or LLHD time type values
-`triggers` | 1-bit signless integer or LLHD sig type of 1-bit signless integer values
-`gates` | none type or 1-bit signless integer or LLHD sig type of 1-bit signless integer values
-
-#### Results:
-
-| Result | Description |
-| :----: | ----------- |
-`result` | LLHD sig type of signless integer or LLHD time type values
+`signal` | LLHD sig type of signless integer or LLHD time type values
+`values` | signless integer or LLHD time type or LLHD sig type of signless integer or LLHD time type values
+`triggers` | 1-bit signless integer
+`delays` | LLHD time type
+`gates` | 1-bit signless integer
 
 ### `llhd.smod` (llhd::SModOp)
 
