@@ -213,30 +213,32 @@ Instantiates a process or entity.
 Syntax:
 
 ```
-operation ::= `llhd.inst` $callee `(` $inputs `)` `->` `(` $outputs `)` attr-dict `:`
+operation ::= `llhd.inst` $name $callee `(` $inputs `)` `->` `(` $outputs `)` attr-dict `:`
               functional-type($inputs, $outputs)
 ```
 
 
 Instantiates a process or entity and thus allows to build hierarchies.
-Can only be used within an entity.
+Can only be used within an entity. An instance defines a unique name
+within the entity it resides in.
 
 Syntax:
 ```
-inst-op ::= `llhd.inst` symbol-name `(` ssa-input-list `)` `->` `(` ssa-output-list `)` attr-dict `:` functional-type(ssa-input-list, ssa-output-list)
+inst-op ::= `llhd.inst` inst-name symbol-name `(` ssa-input-list `)` `->` `(` ssa-output-list `)` attr-dict `:` functional-type(ssa-input-list, ssa-output-list)
 ```
 
 Examples:
 ```
-llhd.inst @empty() -> () : () -> ()
-llhd.inst @proc_symbol() -> (%out0) : () -> !llhd.sig<i32>
-llhd.inst @entity_symbol(%in0, %in1) -> (%out0, %out1) : (!llhd.sig<i32>, !llhd.sig<i16>) -> (!llhd.sig<i8>, !llhd.sig<i4>)
+llhd.inst "foo" @empty() -> () : () -> ()
+llhd.inst "bar" @proc_symbol() -> (%out0) : () -> !llhd.sig<i32>
+llhd.inst "baz" @entity_symbol(%in0, %in1) -> (%out0, %out1) : (!llhd.sig<i32>, !llhd.sig<i16>) -> (!llhd.sig<i8>, !llhd.sig<i4>)
 ```
 
 #### Attributes:
 
 | Attribute | MLIR Type | Description |
 | :-------: | :-------: | ----------- |
+`name` | StringAttr | string attribute
 `callee` | FlatSymbolRefAttr | flat symbol reference attribute
 
 #### Operands:
