@@ -180,6 +180,54 @@ llhd.entity @Foo () -> () {
 | :-------: | :-------: | ----------- |
 `ins` | IntegerAttr | 64-bit signless integer attribute
 
+### `llhd.exts` (llhd::ExtsOp)
+
+Extract a slice of consecutive elements.
+
+Syntax:
+
+```
+operation ::= `llhd.exts` $target `,` $start `,` $length  attr-dict `:`
+              type($target) `to` type($result)
+```
+
+
+The `llhd.exts` operation allows acces of a slice of the `%target`
+operand. The `$start` attribute defines the index of the first element,
+while the `$length` attribute defines the stride of the slice.
+The return type is the same as `%target` but with width `$lenth`.
+If `%target` is a signal, a new subsignal aliasing the slice will be
+returned.
+
+**Examples:**
+```
+%0 = llhd.const 123 : i32
+%1 = llhd.exts %0, 0, 2 : i32 to i2
+
+%2 = llhd.sig %0 : i32
+%3 = llhd.exts %2, 0, 5 : !llhd.sig<i32> to !llhd.sig<i5>
+```
+
+
+#### Attributes:
+
+| Attribute | MLIR Type | Description |
+| :-------: | :-------: | ----------- |
+`start` | IntegerAttr | index attribute
+`length` | IntegerAttr | index attribute
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`target` | signless integer or LLHD sig type of signless integer or LLHD time type values
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | signless integer or LLHD sig type of signless integer or LLHD time type values
+
 ### `llhd.halt` (llhd::HaltOp)
 
 Terminates execution of a process.
