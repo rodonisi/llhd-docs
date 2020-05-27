@@ -192,10 +192,10 @@ operation ::= `llhd.exts` $target `,` $start `,` $length  attr-dict `:`
 ```
 
 
-The `llhd.exts` operation allows acces of a slice of the `%target`
+The `llhd.exts` operation allows access to a slice of the `$target`
 operand. The `$start` attribute defines the index of the first element,
 while the `$length` attribute defines the stride of the slice.
-The return type is the same as `%target` but with width `$lenth`.
+The return type is the same as `$target` but with width `$length`.
 If `%target` is a signal, a new subsignal aliasing the slice will be
 returned.
 
