@@ -785,6 +785,43 @@ It provides no further meaning other than ensuring correct termination
 of an entitiy's region. This operation provides no custom syntax and
 should never explicitly appear in LLHD's custom syntax.
 
+### `llhd.vec` (llhd::VecOp)
+
+Create a vector from a list of values.
+
+Syntax:
+
+```
+operation ::= `llhd.vec` `[` $values `]` attr-dict `:` type($result)
+```
+
+
+The `llhd.vec` operation allows to create a vector from a list of
+SSA-values. This allows for more flexibility compared to only using
+`std.constant` and the vector dialect operations.
+
+**Examples:**
+
+```
+%c1 = llhd.const 1 : i32
+%c2 = llhd.const 2 : i32
+%c3 = llhd.const 3 : i32
+%vec = llhd.vec [%c1, %c2, %c3] : vector<3xi32>
+%elem = vector.extractelement %vec[%c1 : i32] : vector<3xi32>
+```
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`values` | any type
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | vector of any type values
+
 ### `llhd.wait` (llhd::WaitOp)
 
 Suspends execution of a process.
