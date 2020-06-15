@@ -99,6 +99,46 @@ const-op ::= ssa-id `=` `llhd.const` attribute-value attr-dict `:` result-type
 | :----: | ----------- |
 `out` | signless integer or LLHD time type
 
+### `llhd.dexts` (llhd::DextsOp)
+
+Dynamically extract a slice of consecutive elements
+
+Syntax:
+
+```
+operation ::= `llhd.dexts` operands attr-dict `:` functional-type(operands, results)
+```
+
+
+The `llhd.dexts` operation allows to dynamically access a slice of the
+`$target` operand, starting at the index given by the `$start` operand.
+The resulting slice length is defined by the result type.
+The `$target` operand kind has to match the result kind.
+If `$target` is a vector, only the number of elements can change, while
+the element type has to remain the same.
+
+**Examples:**
+```
+%0 = llhd.const 0x0f0 : i12
+%1 = llhd.const 4 : i3
+
+%3 = llhd.dexts %0, %1 : (i12, i3) -> i4    // %3: 0xf
+
+```
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`target` | signless integer or vector of any type values or LLHD sig type of signless integer or LLHD time type values
+`start` | signless integer
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | signless integer or vector of any type values or LLHD sig type of signless integer or LLHD time type values
+
 ### `llhd.drv` (llhd::DrvOp)
 
 Drive a value into a signal.
@@ -784,41 +824,6 @@ The `"llhd.terminator"` op is a dummy terminator for an `EntityOp` unit.
 It provides no further meaning other than ensuring correct termination
 of an entitiy's region. This operation provides no custom syntax and
 should never explicitly appear in LLHD's custom syntax.
-
-### `llhd.tuple` (llhd::TupleOp)
-
-Create a tuple from a list of values.
-
-Syntax:
-
-```
-operation ::= `llhd.tuple` $values attr-dict `:` type($result)
-```
-
-
-The `llhd.tuple` operation creates a tuple from a list of SSA-values.
-
-**Examples:**
-
-```
-%c1 = llhd.const 1 : i32
-%c2 = llhd.const 2 : i2
-%sig = llhd.sig "sig_name" %c1 : i32
-%vec = constant dense<[1, 2]> : vector<2xi32>
-%tuple = llhd.tuple %c1, %c2, %vec, %sig : tuple<i32, i2, vector<2xi32>, !llhd.sig<i32>>
-```
-
-#### Operands:
-
-| Operand | Description |
-| :-----: | ----------- |
-`values` | any type
-
-#### Results:
-
-| Result | Description |
-| :----: | ----------- |
-`result` | tuple
 
 ### `llhd.vec` (llhd::VecOp)
 
