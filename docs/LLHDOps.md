@@ -785,6 +785,41 @@ It provides no further meaning other than ensuring correct termination
 of an entitiy's region. This operation provides no custom syntax and
 should never explicitly appear in LLHD's custom syntax.
 
+### `llhd.tuple` (llhd::TupleOp)
+
+Create a tuple from a list of values.
+
+Syntax:
+
+```
+operation ::= `llhd.tuple` $values attr-dict `:` type($result)
+```
+
+
+The `llhd.tuple` operation creates a tuple from a list of SSA-values.
+
+**Examples:**
+
+```
+%c1 = llhd.const 1 : i32
+%c2 = llhd.const 2 : i2
+%sig = llhd.sig "sig_name" %c1 : i32
+%vec = constant dense<[1, 2]> : vector<2xi32>
+%tuple = llhd.tuple %c1, %c2, %vec, %sig : tuple<i32, i2, vector<2xi32>, !llhd.sig<i32>>
+```
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`values` | any type
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | tuple
+
 ### `llhd.vec` (llhd::VecOp)
 
 Create a vector from a list of values.
