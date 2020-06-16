@@ -123,7 +123,6 @@ the element type has to remain the same.
 %1 = llhd.const 4 : i3
 
 %3 = llhd.dexts %0, %1 : (i12, i3) -> i4    // %3: 0xf
-
 ```
 
 #### Operands:
