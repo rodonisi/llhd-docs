@@ -99,6 +99,45 @@ const-op ::= ssa-id `=` `llhd.const` attribute-value attr-dict `:` result-type
 | :----: | ----------- |
 `out` | signless integer or LLHD time type
 
+### `llhd.dexts` (llhd::DextsOp)
+
+Dynamically extract a slice of consecutive elements
+
+Syntax:
+
+```
+operation ::= `llhd.dexts` operands attr-dict `:` functional-type(operands, results)
+```
+
+
+The `llhd.dexts` operation allows to dynamically access a slice of the
+`$target` operand, starting at the index given by the `$start` operand.
+The resulting slice length is defined by the result type.
+The `$target` operand kind has to match the result kind.
+If `$target` is a vector, only the number of elements can change, while
+the element type has to remain the same.
+
+**Examples:**
+```
+%0 = llhd.const 0x0f0 : i12
+%1 = llhd.const 4 : i3
+
+%3 = llhd.dexts %0, %1 : (i12, i3) -> i4    // %3: 0xf
+```
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`target` | signless integer or vector of any type values or LLHD sig type of signless integer or LLHD time type values
+`start` | signless integer
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | signless integer or vector of any type values or LLHD sig type of signless integer or LLHD time type values
+
 ### `llhd.drv` (llhd::DrvOp)
 
 Drive a value into a signal.
@@ -207,7 +246,6 @@ returned.
 %2 = llhd.sig %0 : i32
 %3 = llhd.exts %2, 0, 5 : !llhd.sig<i32> to !llhd.sig<i5>
 ```
-
 
 #### Attributes:
 
