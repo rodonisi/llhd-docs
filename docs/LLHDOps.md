@@ -292,6 +292,104 @@ halt-op ::= `llhd.halt`
 llhd.halt
 ```
 
+### `llhd.insf` (llhd::InsfOp)
+
+Insert an element into a vector or tuple.
+
+Syntax:
+
+```
+operation ::= `llhd.insf` $target `,` $element `,` $index attr-dict `:`
+              type($target) `,` type($element)
+```
+
+
+The `llhd.insf` operation allows insertion of an element represented by
+the `$element` operand into the `$target` operand. The `$index`
+attribute defines the index where to insert the element. The return type
+is the same as `$target`. Note that the `$target` is not changed, but a
+new value with the element inserted is returned.
+
+**Examples:**
+
+```mlir
+%target = constant dense<[1,2,3]> : vector<3xi8>
+%element = llhd.const 2 : i8
+%0 = llhd.insf %target, %element, 0 : vector<3xi8>, i8
+
+%tuptarget = llhd.tuple %element, %target : tuple<i8, vector<3xi8>
+%newelement = llhd.const 4 : i8
+%1 = llhd.insf %tuptarget, %newelement, 0 : tuple<i8, vector<3xi8>>, i8
+```
+
+#### Attributes:
+
+| Attribute | MLIR Type | Description |
+| :-------: | :-------: | ----------- |
+`index` | IntegerAttr | index attribute
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`target` | vector of any type values or tuple
+`element` | any type
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | vector of any type values or tuple
+
+### `llhd.inss` (llhd::InssOp)
+
+Insert a slice of consecutive elements.
+
+Syntax:
+
+```
+operation ::= `llhd.inss` $target `,` $slice `,` $start attr-dict `:`
+              type($target) `,` type($slice)
+```
+
+
+The `llhd.inss` operation allows insertion of a slice represented by the
+`$slice` operand into the `$target` operand. The `$start` attribute
+defines the index of the first element. The return type is the same as
+`$target`. Note that the `$target` is not changed, but a new value with
+the slice inserted is returned.
+
+**Examples:**
+
+```mlir
+%itarget = llhd.const 123 : i32
+%islice = llhd.const 2 : i2
+%0 = llhd.inss %itarget, %islice, 0 : i32, i2
+
+%vtarget = constant dense<[1,2,3]> : vector<3xi32>
+%vslice = constant dense<[4,5]> : vector<2xi32>
+%1 = llhd.inss %vtarget, %vslice, 0 : vector<3xi32>, vector<2xi32>
+```
+
+#### Attributes:
+
+| Attribute | MLIR Type | Description |
+| :-------: | :-------: | ----------- |
+`start` | IntegerAttr | index attribute
+
+#### Operands:
+
+| Operand | Description |
+| :-----: | ----------- |
+`target` | signless integer or vector of any type values
+`slice` | signless integer or vector of any type values
+
+#### Results:
+
+| Result | Description |
+| :----: | ----------- |
+`result` | signless integer or vector of any type values
+
 ### `llhd.inst` (llhd::InstOp)
 
 Instantiates a process or entity.
