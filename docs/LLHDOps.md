@@ -865,7 +865,7 @@ Create a vector from a list of values.
 Syntax:
 
 ```
-operation ::= `llhd.vec` `[` $values `]` attr-dict `:` type($result)
+operation ::= `llhd.vec` $values attr-dict `:` type($result)
 ```
 
 
@@ -879,7 +879,7 @@ SSA-values. This allows for more flexibility compared to only using
 %c1 = llhd.const 1 : i32
 %c2 = llhd.const 2 : i32
 %c3 = llhd.const 3 : i32
-%vec = llhd.vec [%c1, %c2, %c3] : vector<3xi32>
+%vec = llhd.vec %c1, %c2, %c3 : vector<3xi32>
 %elem = vector.extractelement %vec[%c1 : i32] : vector<3xi32>
 ```
 
